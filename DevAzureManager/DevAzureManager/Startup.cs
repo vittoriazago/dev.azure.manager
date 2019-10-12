@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using DevAzureManager.Application;
+using DevAzureManager.Clients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +29,10 @@ namespace DevAzureManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddScoped<IReleaseClient, ReleaseClient>();
+
+            services.ConfigureAutomapperTypes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
