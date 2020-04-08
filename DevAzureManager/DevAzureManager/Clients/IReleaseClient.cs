@@ -9,6 +9,7 @@ namespace DevAzureManager.Clients
 {
     public interface IReleaseClient
     {
-        Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync();
+        public Task<ReleaseDetailVSTSDto> GetReleaseDetail(long idRelease);
+        public Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(StatusRelease status);
     }
 }

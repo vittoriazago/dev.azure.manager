@@ -27,10 +27,18 @@ namespace DevAzureManager.Controllers
 
         [HttpGet]
         [Route("approvals")]
-        public async Task<ActionResult> Approvals()
+        public async Task<ActionResult<ApprovalsPendingCountDto>> Approvals(
+            StatusRelease? status = null)
         {
-            var approvals = await _releaseClient.GetApprovalPendingAsync();
+            var approvals = await _releaseClient.GetApprovalPendingAsync(status ?? StatusRelease.pending);
             return Ok(_mapper.Map<ApprovalsPendingCountDto>(approvals));
+        }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<ReleaseDetailDto>> Approvals([FromRoute]long id)
+        {
+            var detail = await _releaseClient.GetReleaseDetail(id).ConfigureAwait(false);
+            return Ok(_mapper.Map<ReleaseDetailDto>(detail));
         }
     }
 

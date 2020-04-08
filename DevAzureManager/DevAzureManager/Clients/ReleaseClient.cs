@@ -16,14 +16,35 @@ namespace DevAzureManager.Clients
         {
         }
 
-        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync()
+        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(StatusRelease status)
         {
-            var url = BaseUri + "_apis/release/approvals?continuationToken=0";
-            HttpResponseMessage response = await Client.GetAsync(url);
+            var url = BaseUri + $"_apis/release/approvals?continuationToken=0&statusFilter={status}";
+            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             var responseBody = ApprovalsPendingVSTSCountDto.FromJson(
                                         await response.Content.ReadAsStringAsync());
             return responseBody;
         }
+
+        public async Task<ReleaseDetailVSTSDto> GetReleaseDetail(long idRelease)
+        {
+            var url = BaseUri + $"_apis/release/releases/{idRelease}";
+            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsAsync<ReleaseDetailVSTSDto>();
+            return responseBody;
+        }
+
+    }
+
+    public enum StatusRelease
+    {
+        approved,
+        canceled,
+        pending,
+        reassigned,
+        rejected,
+        skipped,
+        undefined
     }
 }
