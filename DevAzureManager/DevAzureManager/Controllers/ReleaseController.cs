@@ -40,7 +40,7 @@ namespace DevAzureManager.Controllers
         }
 
         [HttpPost]
-        [Route("approvals/{user}/{token}")]
+        [Route("approvals")]
         public async Task<ActionResult> Approve([FromBody] List<ApprovalsRequestDto> approves)
         {
             foreach (var approva in approves)
