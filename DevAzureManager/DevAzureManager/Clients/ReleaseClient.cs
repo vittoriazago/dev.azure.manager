@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using DevAzureManager.Models;
 using DevAzureManager.Models.Azure;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -16,9 +14,9 @@ namespace DevAzureManager.Clients
         {
         }
 
-        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(StatusRelease status)
+        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(Status status)
         {
-            var url = BaseUri + $"_apis/release/approvals?continuationToken=0&statusFilter={status}";
+            var url = $"{BaseUri}_apis/release/approvals?continuationToken=0&statusFilter={status}";
             HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             var responseBody = ApprovalsPendingVSTSCountDto.FromJson(
@@ -28,23 +26,28 @@ namespace DevAzureManager.Clients
 
         public async Task<ReleaseDetailVSTSDto> GetReleaseDetail(long idRelease)
         {
-            var url = BaseUri + $"_apis/release/releases/{idRelease}";
+            var url = $"{BaseUri}_apis/release/releases/{idRelease}";
             HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsAsync<ReleaseDetailVSTSDto>();
             return responseBody;
         }
 
+        public async Task PostApprovalPendingAsync(long approvalId,
+                    ApprovalsRequestVSTSDto approve)
+        {
+            var url = $"{BaseUri}_apis/release/approvals/{approvalId}?api-version=5.2-preview";
+
+            HttpResponseMessage response = await Client.SendAsync(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Patch,
+                RequestUri = new Uri(url),
+                Content = new StringContent(JsonConvert.SerializeObject(approve),
+                                    Encoding.UTF8,
+                                    "application/json"),
+            });
+            response.EnsureSuccessStatusCode();
+        }
     }
 
-    public enum StatusRelease
-    {
-        approved,
-        canceled,
-        pending,
-        reassigned,
-        rejected,
-        skipped,
-        undefined
-    }
 }

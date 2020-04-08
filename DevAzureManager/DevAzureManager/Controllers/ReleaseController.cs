@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using DevAzureManager.Clients;
 using DevAzureManager.Models;
+using DevAzureManager.Models.Azure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace DevAzureManager.Controllers
 {
@@ -12,15 +12,12 @@ namespace DevAzureManager.Controllers
     [Route("[controller]")]
     public class ReleaseController : ControllerBase
     {
-        private readonly ILogger<ReleaseController> _logger;
         private readonly IReleaseClient _releaseClient;
         private readonly IMapper _mapper;
 
-        public ReleaseController(ILogger<ReleaseController> logger,
-            IReleaseClient releaseClient,
+        public ReleaseController(IReleaseClient releaseClient,
             IMapper mapper)
         {
-            _logger = logger;
             _mapper = mapper;
             _releaseClient = releaseClient;
         }
@@ -28,17 +25,34 @@ namespace DevAzureManager.Controllers
         [HttpGet]
         [Route("approvals")]
         public async Task<ActionResult<ApprovalsPendingCountDto>> Approvals(
-            StatusRelease? status = null)
+            Status? status = null)
         {
-            var approvals = await _releaseClient.GetApprovalPendingAsync(status ?? StatusRelease.pending);
+            var approvals = await _releaseClient.GetApprovalPendingAsync(status ?? Status.Pending);
             return Ok(_mapper.Map<ApprovalsPendingCountDto>(approvals));
         }
+
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<ReleaseDetailDto>> Approvals([FromRoute]long id)
         {
             var detail = await _releaseClient.GetReleaseDetail(id).ConfigureAwait(false);
             return Ok(_mapper.Map<ReleaseDetailDto>(detail));
+        }
+
+        [HttpPost]
+        [Route("approvals/{user}/{token}")]
+        public async Task<ActionResult> Approve([FromBody] List<ApprovalsRequestDto> approves)
+        {
+            foreach (var approva in approves)
+            {
+                await _releaseClient.PostApprovalPendingAsync(approva.Id,
+                    new ApprovalsRequestVSTSDto()
+                    {
+                        Comments = approva.Comments,
+                        Status = approva.Status
+                    });
+            }
+            return Ok();
         }
     }
 

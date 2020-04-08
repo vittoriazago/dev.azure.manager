@@ -1,8 +1,4 @@
-﻿using DevAzureManager.Models;
-using DevAzureManager.Models.Azure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DevAzureManager.Models.Azure;
 using System.Threading.Tasks;
 
 namespace DevAzureManager.Clients
@@ -10,6 +6,7 @@ namespace DevAzureManager.Clients
     public interface IReleaseClient
     {
         public Task<ReleaseDetailVSTSDto> GetReleaseDetail(long idRelease);
-        public Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(StatusRelease status);
+        public Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(Status status);
+        public Task PostApprovalPendingAsync(long approvalId, ApprovalsRequestVSTSDto approve);
     }
 }
