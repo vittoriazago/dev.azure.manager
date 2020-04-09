@@ -39,6 +39,17 @@ namespace DevAzureManager.Controllers
             return Ok(_mapper.Map<ReleaseDetailDto>(detail));
         }
 
+
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult<ReleaseResponseDto>> GetReleases(
+            Status? status = null)
+        {
+            var releases = await _releaseClient.GetReleases(status ?? Status.Pending);
+
+            return Ok(_mapper.Map<ReleaseResponseDto>(releases));
+        }
+
         [HttpPost]
         [Route("approvals")]
         public async Task<ActionResult> Approve([FromBody] List<ApprovalsRequestDto> approves)

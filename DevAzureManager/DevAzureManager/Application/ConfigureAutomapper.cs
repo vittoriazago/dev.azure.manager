@@ -28,7 +28,13 @@ namespace DevAzureManager.Application
                     .ForMember(o => o.CreatedBy, s => s.MapFrom(n => n.createdBy.displayName))
                     .ForMember(o => o.Branch, s => s.MapFrom(n => n.artifacts.First().definitionReference.branches.name));
 
+                cfg.CreateMap<ReleaseResponseVSTSDto, ReleaseResponseDto>();
 
+                cfg.CreateMap<ReleaseResponseListVSTSDto, ReleaseResponseListDto>()
+                    .ForMember(o => o.IdRelease, s => s.MapFrom(n => n.release.Id))
+                    .ForMember(o => o.NameRelease, s => s.MapFrom(n => n.release.Name))
+                    .ForMember(o => o.NameReleaseDefinition, s => s.MapFrom(n => n.releaseDefinition.Name))
+                    .ForMember(o => o.Enviroment, s => s.MapFrom(n => n.releaseEnvironment.name));
 
             }, AppDomain.CurrentDomain.GetAssemblies());
         }

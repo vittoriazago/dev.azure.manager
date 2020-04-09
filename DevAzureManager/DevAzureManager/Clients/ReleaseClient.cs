@@ -33,6 +33,15 @@ namespace DevAzureManager.Clients
             return responseBody;
         }
 
+        public async Task<ReleaseResponseVSTSDto> GetReleases(Status? status = null)
+        {
+            var url = $"{BaseUri}_apis/release/releases?status={status}";
+            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsAsync<ReleaseResponseVSTSDto>();
+            return responseBody;
+        }
+
         public async Task PostApprovalPendingAsync(long approvalId,
                     ApprovalsRequestVSTSDto approve)
         {
