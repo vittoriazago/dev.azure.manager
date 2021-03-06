@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DevAzureManager.Models.Azure;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using DevAzureManager.Models.Azure;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace DevAzureManager.Clients
 {
@@ -14,49 +15,57 @@ namespace DevAzureManager.Clients
         {
         }
 
-        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(Status status)
+        /// <summary>
+        /// Get releases with status
+        /// </summary>
+        public async Task<ApprovalsPendingVSTSCountDto> GetApprovalPendingAsync(
+            string user, string token, Status? status = null)
         {
-            var url = $"{BaseUri}_apis/release/approvals?continuationToken=0&statusFilter={status}";
-            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
+            GetAuthorizationHeader(user, token);
+            var url = new Uri(BaseUri, $"_apis/release/approvals?continuationToken=0&status={status}");
+
+            var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
+
             var responseBody = ApprovalsPendingVSTSCountDto.FromJson(
                                         await response.Content.ReadAsStringAsync());
             return responseBody;
         }
 
+        /// <summary>
+        /// Get details of one release
+        /// </summary>
         public async Task<ReleaseDetailVSTSDto> GetReleaseDetail(long idRelease)
         {
-            var url = $"{BaseUri}_apis/release/releases/{idRelease}";
-            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
+            var url = new Uri(BaseUri, $"_apis/release/releases/{idRelease}");
+
+            var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
+
             var responseBody = await response.Content.ReadAsAsync<ReleaseDetailVSTSDto>();
             return responseBody;
         }
 
-        public async Task<ReleaseResponseVSTSDto> GetReleases(Status? status = null)
+        /// <summary>
+        /// Post approve to releases
+        /// </summary>
+        public async Task<HttpStatusCode> PostApprovalPendingAsync(
+                    string user, string token, long approvalId,
+                    ApproveRequestVSTSDto approve)
         {
-            var url = $"{BaseUri}_apis/release/releases?status={status}";
-            HttpResponseMessage response = await Client.GetAsync(url).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var responseBody = await response.Content.ReadAsAsync<ReleaseResponseVSTSDto>();
-            return responseBody;
-        }
+            var url = new Uri(BaseUri, $"_apis/release/approvals/{approvalId}?api-version=5.2-preview");
+            GetAuthorizationHeader(user, token);
 
-        public async Task PostApprovalPendingAsync(long approvalId,
-                    ApprovalsRequestVSTSDto approve)
-        {
-            var url = $"{BaseUri}_apis/release/approvals/{approvalId}?api-version=5.2-preview";
-
-            HttpResponseMessage response = await Client.SendAsync(new HttpRequestMessage()
+            var response = await _httpClient.SendAsync(new HttpRequestMessage()
             {
                 Method = HttpMethod.Patch,
-                RequestUri = new Uri(url),
+                RequestUri = url,
                 Content = new StringContent(JsonConvert.SerializeObject(approve),
                                     Encoding.UTF8,
                                     "application/json"),
             });
             response.EnsureSuccessStatusCode();
+            return response.StatusCode;
         }
     }
-
 }

@@ -1,68 +1,108 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DevAzureManager.Clients;
 using DevAzureManager.Models;
 using DevAzureManager.Models.Azure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DevAzureManager.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ReleaseController : ControllerBase
+    public class ReleasesController : ControllerBase
     {
+        private readonly ILogger<ReleasesController> _logger;
         private readonly IReleaseClient _releaseClient;
         private readonly IMapper _mapper;
 
-        public ReleaseController(IReleaseClient releaseClient,
+        public ReleasesController(ILogger<ReleasesController> logger,
+            IReleaseClient releaseClient,
             IMapper mapper)
         {
+            _logger = logger;
             _mapper = mapper;
             _releaseClient = releaseClient;
         }
 
+        /// <summary>
+        /// Get releases pending approval by filters
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="token"></param>
+        /// <param name="ambiente"></param>
+        /// <param name="nomeAplicacao"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("approvals")]
-        public async Task<ActionResult<ApprovalsPendingCountDto>> Approvals(
+        [Route("approvals/{user}/{token}")]
+        public async Task<ActionResult> Approvals(
+            string user,
+            string token,
+            string ambiente = null,
+            string nomeAplicacao = null,
             Status? status = null)
         {
-            var approvals = await _releaseClient.GetApprovalPendingAsync(status ?? Status.Pending);
-            return Ok(_mapper.Map<ApprovalsPendingCountDto>(approvals));
+            var approvals = await _releaseClient.GetApprovalPendingAsync(user, token, status);
+
+            var approvalsDto = _mapper.Map<ApprovalsPendingCountDto>(approvals);
+            ApplyFiltersInMemory(ambiente, nomeAplicacao, approvalsDto);
+
+            approvalsDto.Count = approvalsDto.Value.Count();
+            approvalsDto.Value = approvalsDto.Value.Select(a =>
+            {
+                var detail = _releaseClient.GetReleaseDetail(a.ReleaseId).Result;
+                var detailDto = _mapper.Map<ReleaseDetailDto>(detail);
+                a.Branch = detailDto.Branch;
+                a.CreatedBy = detailDto.CreatedBy;
+                return a;
+            }).ToList();
+
+            return Ok(approvalsDto);
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<ReleaseDetailDto>> Approvals([FromRoute]long id)
+        private static void ApplyFiltersInMemory(string ambiente, string nomeAplicacao, ApprovalsPendingCountDto approvalsDto)
         {
-            var detail = await _releaseClient.GetReleaseDetail(id).ConfigureAwait(false);
-            return Ok(_mapper.Map<ReleaseDetailDto>(detail));
+            approvalsDto.Value = approvalsDto.Value.OrderBy(p => p.ReleaseDefinitionName).ToList();
+
+            if (!string.IsNullOrEmpty(ambiente))
+                approvalsDto.Value = approvalsDto.Value.Where(a =>
+                                        a.ReleaseEnviromentName.ToUpper()
+                                        .Contains(ambiente.ToUpper()))
+                                        .ToList();
+            if (!string.IsNullOrEmpty(nomeAplicacao))
+                approvalsDto.Value = approvalsDto.Value.Where(a =>
+                                        a.ReleaseDefinitionName.ToUpper()
+                                        .Contains(nomeAplicacao.ToUpper()))
+                                        .ToList();
         }
 
-
-        [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<ReleaseResponseDto>> GetReleases(
-            Status? status = null)
-        {
-            var releases = await _releaseClient.GetReleases(status ?? Status.Pending);
-
-            return Ok(_mapper.Map<ReleaseResponseDto>(releases));
-        }
-
+        /// <summary>
+        /// Post approval in multiple releases
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="token"></param>
+        /// <param name="approves"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("approvals")]
-        public async Task<ActionResult> Approve([FromBody] List<ApprovalsRequestDto> approves)
+        [Route("approvals/{user}/{token}")]
+        public async Task<ActionResult> Approve(
+            string user,
+            string token,
+            [FromBody] List<ApproveRequestDto> approves)
         {
             foreach (var approva in approves)
             {
-                await _releaseClient.PostApprovalPendingAsync(approva.Id,
-                    new ApprovalsRequestVSTSDto()
+                await _releaseClient.PostApprovalPendingAsync(user, token, approva.Id,
+                    new ApproveRequestVSTSDto()
                     {
                         Comments = approva.Comments,
                         Status = approva.Status
                     });
             }
+
             return Ok();
         }
     }

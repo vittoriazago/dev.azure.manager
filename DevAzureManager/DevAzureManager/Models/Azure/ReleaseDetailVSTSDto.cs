@@ -1,15 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DevAzureManager.Models.Azure
 {
-    public class Links
+    public class ReleaseDetailVSTSDto
     {
-        public Avatar avatar { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string status { get; set; }
+        public DateTime createdOn { get; set; }
+        public DateTime modifiedOn { get; set; }
+        public ModifiedBy modifiedBy { get; set; }
+        public CreatedBy createdBy { get; set; }
+        public CreatedFor createdFor { get; set; }
+        public List<Environment> environments { get; set; }
+        public Variables3 variables { get; set; }
+        public List<VariableGroup2> variableGroups { get; set; }
+        public List<Artifact> artifacts { get; set; }
+        public ReleaseDefinition2 releaseDefinition { get; set; }
+        public int releaseDefinitionRevision { get; set; }
+        public string description { get; set; }
+        public string reason { get; set; }
+        public string releaseNameFormat { get; set; }
+        public bool keepForever { get; set; }
+        public int definitionSnapshotRevision { get; set; }
+        public string logsContainerUrl { get; set; }
+        public string url { get; set; }
+        public Links10 _links { get; set; }
+        public List<object> tags { get; set; }
+        public object triggeringArtifactAlias { get; set; }
+        public ProjectReference projectReference { get; set; }
+        public Properties properties { get; set; }
     }
-
     public class ModifiedBy
     {
         public string displayName { get; set; }
@@ -67,277 +89,8 @@ namespace DevAzureManager.Models.Azure
     {
     }
 
-    public class AppPoolPrefixApi
-    {
-        public string value { get; set; }
-    }
-
-    public class AppPoolPrefixFront
-    {
-        public string value { get; set; }
-    }
-
-    public class AppPoolPrefixGwEntrada
-    {
-        public string value { get; set; }
-    }
-
-    public class AppPoolPrefixGwSaida
-    {
-        public string value { get; set; }
-    }
-
-    public class AppPoolPrefixServicosPagou
-    {
-        public string value { get; set; }
-    }
-
-    public class CertificadoSSL
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteApi
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFront
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteGwEntrada
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteGwSaida
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteServicosPagou
-    {
-        public string value { get; set; }
-    }
-
-    public class PhysicalPathApi
-    {
-        public string value { get; set; }
-    }
-
-    public class PhysicalPathFront
-    {
-        public string value { get; set; }
-    }
-
-    public class PhysicalPathGwEntrada
-    {
-        public string value { get; set; }
-    }
-
-    public class PhysicalPathGwSaida
-    {
-        public string value { get; set; }
-    }
-
-    public class PhysicalPathServicosPagou
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlApi
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlBaseFront
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFront
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontAcionamento
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlGW
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlGWSaida
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlServicosPagou
-    {
-        public string value { get; set; }
-    }
-
-    public class VirtualPathApi
-    {
-        public string value { get; set; }
-    }
-
-    public class VirtualPathFront
-    {
-        public string value { get; set; }
-    }
-
-    public class VirtualPathGwEntrada
-    {
-        public string value { get; set; }
-    }
-
-    public class VirtualPathGwSaida
-    {
-        public string value { get; set; }
-    }
-
-    public class VirtualPathServicosPagou
-    {
-        public string value { get; set; }
-    }
-
-    public class CaminhoRaizSite
-    {
-        public string value { get; set; }
-    }
-
-    public class CertificadoSSLChatbot
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteGwEntradaChatbot
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlGWChatbot
-    {
-        public string value { get; set; }
-    }
-
-    public class PastaInstalacaoMetricBeat
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontAcionamento
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontGestao
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontOperacaoPaschoalotto
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontPagouFacilB2b
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontPagouFacilB2c
-    {
-        public string value { get; set; }
-    }
-
-    public class ParentWebsiteFrontParceiro
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontGestaoProduto
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontOperacaoPaschoalotto
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontPagouFacilB2b
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontPagouFacilB2C
-    {
-        public string value { get; set; }
-    }
-
-    public class UrlFrontParceiro
-    {
-        public string value { get; set; }
-    }
-
-    public class Variables2
-    {
-        public AppPoolPrefixApi AppPoolPrefixApi { get; set; }
-        public AppPoolPrefixFront AppPoolPrefixFront { get; set; }
-        public AppPoolPrefixGwEntrada AppPoolPrefixGwEntrada { get; set; }
-        public AppPoolPrefixGwSaida AppPoolPrefixGwSaida { get; set; }
-        public AppPoolPrefixServicosPagou AppPoolPrefixServicosPagou { get; set; }
-        public CertificadoSSL CertificadoSSL { get; set; }
-        public ParentWebsiteApi ParentWebsiteApi { get; set; }
-        public ParentWebsiteFront ParentWebsiteFront { get; set; }
-        public ParentWebsiteGwEntrada ParentWebsiteGwEntrada { get; set; }
-        public ParentWebsiteGwSaida ParentWebsiteGwSaida { get; set; }
-        public ParentWebsiteServicosPagou ParentWebsiteServicosPagou { get; set; }
-        public PhysicalPathApi PhysicalPathApi { get; set; }
-        public PhysicalPathFront PhysicalPathFront { get; set; }
-        public PhysicalPathGwEntrada PhysicalPathGwEntrada { get; set; }
-        public PhysicalPathGwSaida PhysicalPathGwSaida { get; set; }
-        public PhysicalPathServicosPagou PhysicalPathServicosPagou { get; set; }
-        public UrlApi UrlApi { get; set; }
-        public UrlBaseFront UrlBaseFront { get; set; }
-        public UrlFront UrlFront { get; set; }
-        public UrlFrontAcionamento UrlFrontAcionamento { get; set; }
-        public UrlGW UrlGW { get; set; }
-        public UrlGWSaida UrlGWSaida { get; set; }
-        public UrlServicosPagou UrlServicosPagou { get; set; }
-        public VirtualPathApi VirtualPathApi { get; set; }
-        public VirtualPathFront VirtualPathFront { get; set; }
-        public VirtualPathGwEntrada VirtualPathGwEntrada { get; set; }
-        public VirtualPathGwSaida VirtualPathGwSaida { get; set; }
-        public VirtualPathServicosPagou VirtualPathServicosPagou { get; set; }
-        public CaminhoRaizSite CaminhoRaizSite { get; set; }
-        public CertificadoSSLChatbot CertificadoSSLChatbot { get; set; }
-        public ParentWebsiteGwEntradaChatbot ParentWebsiteGwEntradaChatbot { get; set; }
-        public UrlGWChatbot UrlGWChatbot { get; set; }
-        public PastaInstalacaoMetricBeat PastaInstalacaoMetricBeat { get; set; }
-        public ParentWebsiteFrontAcionamento ParentWebsiteFrontAcionamento { get; set; }
-        public ParentWebsiteFrontGestao ParentWebsiteFrontGestao { get; set; }
-        public ParentWebsiteFrontOperacaoPaschoalotto ParentWebsiteFrontOperacaoPaschoalotto { get; set; }
-        public ParentWebsiteFrontPagouFacilB2b ParentWebsiteFrontPagouFacilB2b { get; set; }
-        public ParentWebsiteFrontPagouFacilB2c ParentWebsiteFrontPagouFacilB2c { get; set; }
-        public ParentWebsiteFrontParceiro ParentWebsiteFrontParceiro { get; set; }
-        public UrlFrontGestaoProduto UrlFrontGestaoProduto { get; set; }
-        public UrlFrontOperacaoPaschoalotto UrlFrontOperacaoPaschoalotto { get; set; }
-        public UrlFrontPagouFacilB2b UrlFrontPagouFacilB2b { get; set; }
-        public UrlFrontPagouFacilB2C UrlFrontPagouFacilB2C { get; set; }
-        public UrlFrontParceiro UrlFrontParceiro { get; set; }
-    }
-
     public class VariableGroup
     {
-        public Variables2 variables { get; set; }
         public string type { get; set; }
         public int id { get; set; }
         public string name { get; set; }
@@ -610,7 +363,7 @@ namespace DevAzureManager.Models.Azure
         public Web web { get; set; }
         public Self self { get; set; }
     }
-    
+
     public class Web2
     {
         public string href { get; set; }
@@ -626,7 +379,7 @@ namespace DevAzureManager.Models.Azure
         public Web2 web { get; set; }
         public Self2 self { get; set; }
     }
-    
+
     public class Avatar6
     {
         public string href { get; set; }
@@ -926,43 +679,9 @@ namespace DevAzureManager.Models.Azure
         public Web4 web { get; set; }
     }
 
-    public class ProjectReference
-    {
-        public string id { get; set; }
-        public object name { get; set; }
-    }
 
     public class Properties
     {
     }
 
-    public class ReleaseDetailVSTSDto
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string status { get; set; }
-        public DateTime createdOn { get; set; }
-        public DateTime modifiedOn { get; set; }
-        public ModifiedBy modifiedBy { get; set; }
-        public CreatedBy createdBy { get; set; }
-        public CreatedFor createdFor { get; set; }
-        public List<Environment> environments { get; set; }
-        public Variables3 variables { get; set; }
-        public List<VariableGroup2> variableGroups { get; set; }
-        public List<Artifact> artifacts { get; set; }
-        public ReleaseDefinition2 releaseDefinition { get; set; }
-        public int releaseDefinitionRevision { get; set; }
-        public string description { get; set; }
-        public string reason { get; set; }
-        public string releaseNameFormat { get; set; }
-        public bool keepForever { get; set; }
-        public int definitionSnapshotRevision { get; set; }
-        public string logsContainerUrl { get; set; }
-        public string url { get; set; }
-        public Links10 _links { get; set; }
-        public List<object> tags { get; set; }
-        public object triggeringArtifactAlias { get; set; }
-        public ProjectReference projectReference { get; set; }
-        public Properties properties { get; set; }
-    }
 }

@@ -36,6 +36,5 @@ namespace DevAzureManager.Models.Azure
         public int id { get; set; }
         public string name { get; set; }
         public string url { get; set; }
-        public Links3 _links { get; set; }
     }
 }
